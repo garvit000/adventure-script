@@ -82,112 +82,126 @@ const Login = () => {
   };
 
   return (
-    <div 
-      className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
+    <div
+      className="min-h-screen flex items-center justify-center p-6 bg-background text-foreground"
       style={{
         backgroundImage: `url(${heroBg})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
       }}
     >
-      {/* Overlay */}
       <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" />
-      
-      {/* Floating particles */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <Sparkles className="absolute top-20 left-20 w-8 h-8 text-primary animate-float opacity-50" />
-        <Sparkles className="absolute top-40 right-40 w-6 h-6 text-gold animate-float opacity-60" style={{ animationDelay: '1s' }} />
-        <Sparkles className="absolute bottom-20 left-1/3 w-7 h-7 text-success animate-float opacity-40" style={{ animationDelay: '2s' }} />
-      </div>
 
-      {/* Login Card */}
-      <GradientCard 
-        className="w-full max-w-md z-10 animate-scale-in" 
-        glowEffect
-      >
-        <div className="text-center mb-8">
-          <div className="flex justify-center gap-3 mb-4">
-            <Sword className="w-12 h-12 text-primary animate-float" />
-            <Shield className="w-12 h-12 text-secondary animate-float" style={{ animationDelay: '0.5s' }} />
+      <div className="relative z-10 w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        {/* Left promo panel */}
+        <div className="hidden md:flex flex-col gap-6 p-8 rounded-2xl gradient-card shadow-card animate-slide-up">
+          <div className="flex items-center gap-3">
+            <Sword className="w-12 h-12 text-primary" />
+            <div>
+              <h2 className="text-3xl font-extrabold gradient-primary bg-clip-text text-transparent">Code Adventure RPG</h2>
+              <p className="text-muted-foreground">Learn to code through short, gamified quests. Earn XP, level up, and show off your skills.</p>
+            </div>
           </div>
-          <h1 className="text-4xl font-bold mb-2 gradient-primary bg-clip-text text-transparent">
-            Code Adventure RPG
-          </h1>
-          <p className="text-muted-foreground">
-            {isLogin ? "Welcome back, hero!" : "Begin your coding quest"}
-          </p>
+
+          <div className="space-y-4">
+            <div className="flex items-start gap-3">
+              <div className="p-3 rounded-lg bg-success/10">
+                <Sparkles className="w-5 h-5 text-success" />
+              </div>
+              <div>
+                <div className="font-semibold">Daily Challenges</div>
+                <div className="text-sm text-muted-foreground">Bite-sized tasks to practice and improve.</div>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <div className="p-3 rounded-lg bg-primary/10">
+                <Shield className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <div className="font-semibold">Progress Tracking</div>
+                <div className="text-sm text-muted-foreground">Your progress is saved to the backend for persistence.</div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {!isLogin && (
+        {/* Form panel */}
+        <GradientCard className="p-8 z-20 animate-scale-in" glowEffect>
+          <div className="flex flex-col items-center text-center mb-6">
+            <div className="flex items-center gap-3 mb-3">
+              <Sword className="w-10 h-10 text-primary" />
+              <Shield className="w-10 h-10 text-secondary" />
+            </div>
+            <h1 className="text-2xl md:text-3xl font-bold mb-1">{isLogin ? "Welcome back" : "Create your hero"}</h1>
+            <p className="text-muted-foreground">{isLogin ? "Sign in to continue your adventure." : "Create an account to save progress."}</p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {!isLogin && (
+              <div className="space-y-2">
+                <Label htmlFor="username">Username</Label>
+                <Input
+                  id="username"
+                  placeholder="Choose your hero name"
+                  value={formData.username}
+                  onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                  className="bg-muted/50 border-primary/20"
+                  required
+                />
+              </div>
+            )}
+
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
-                id="username"
-                placeholder="Choose your hero name"
-                value={formData.username}
-                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                id="email"
+                type="email"
+                placeholder="you@domain.com"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 className="bg-muted/50 border-primary/20"
                 required
               />
             </div>
-          )}
 
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="your@email.com"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="bg-muted/50 border-primary/20"
-              required
-            />
-          </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                className="bg-muted/50 border-primary/20"
+                required
+              />
+            </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              className="bg-muted/50 border-primary/20"
-              required
-            />
-          </div>
-
-          <Button 
-            type="submit" 
-            className="w-full gradient-primary hover:opacity-90 transition-smooth shadow-glow"
-            size="lg"
-            disabled={loading}
-          >
-            {loading ? (isLogin ? "Signing in..." : "Creating...") : (isLogin ? "Start Quest" : "Create Hero")}
-          </Button>
-
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full"
-            onClick={handleGuestLogin}
-          >
-            Continue as Guest
-          </Button>
-
-          <div className="text-center">
-            <button
-              type="button"
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-sm text-primary hover:underline"
+            <Button
+              type="submit"
+              className="w-full gradient-primary hover:opacity-95 transition-smooth shadow-glow"
+              size="lg"
+              disabled={loading}
             >
-              {isLogin ? "Need an account? Sign up" : "Already have an account? Login"}
-            </button>
-          </div>
-        </form>
-      </GradientCard>
+              {loading ? (isLogin ? "Signing in..." : "Creating...") : (isLogin ? "Sign in" : "Create account")}
+            </Button>
+
+            <div className="flex gap-3">
+              <Button type="button" variant="outline" className="flex-1" onClick={handleGuestLogin}>
+                Continue as Guest
+              </Button>
+              <button
+                type="button"
+                onClick={() => setIsLogin(!isLogin)}
+                className="text-sm text-primary underline-offset-2 hover:underline"
+              >
+                {isLogin ? "Sign up" : "Login"}
+              </button>
+            </div>
+          </form>
+        </GradientCard>
+      </div>
     </div>
   );
 };

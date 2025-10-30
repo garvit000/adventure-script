@@ -26,34 +26,11 @@ const Dashboard = () => {
     totalQuests: 50,
   };
 
-  const dailyQuests = [
-    {
-      id: 1,
-      title: "Array Master",
-      description: "Complete 3 array manipulation challenges",
-      difficulty: "Easy",
-      xpReward: 100,
-      icon: Code2,
-      color: "success",
-    },
-    {
-      id: 2,
-      title: "Loop Legend",
-      description: "Solve the mysterious loop puzzle",
-      difficulty: "Medium",
-      xpReward: 200,
-      icon: Target,
-      color: "primary",
-    },
-    {
-      id: 3,
-      title: "Debug Dungeon",
-      description: "Find and fix 5 bugs in legacy code",
-      difficulty: "Hard",
-      xpReward: 350,
-      icon: Sparkles,
-      color: "gold",
-    },
+  // Languages available for quests
+  const languages = [
+    { key: "cpp", label: "C++" },
+    { key: "java", label: "Java" },
+    { key: "python", label: "Python" },
   ];
 
   const getDifficultyColor = (difficulty: string) => {
@@ -68,23 +45,22 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen p-6 space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-start">
+      <div className="flex flex-col md:flex-row justify-between items-start gap-4">
         <div className="space-y-2 animate-slide-up">
-          <h1 className="text-4xl font-bold">
-            Welcome back, <span className="gradient-primary bg-clip-text text-transparent">{userData.username}</span>!
+          <h1 className="text-3xl md:text-4xl font-bold">
+            Welcome back,
+            <span className="ml-2 gradient-primary bg-clip-text text-transparent">{userData.username}</span>!
           </h1>
-          <p className="text-muted-foreground text-lg">Ready for your next adventure?</p>
+          <p className="text-muted-foreground text-sm md:text-lg">Ready for your next adventure?</p>
         </div>
-        
-        <GradientCard className="p-4" glowEffect>
-          <div className="flex items-center gap-3">
-            <div className="w-16 h-16 rounded-full gradient-primary flex items-center justify-center shadow-glow">
-              <Sword className="w-8 h-8 text-primary-foreground" />
-            </div>
-            <div>
-              <div className="text-sm text-muted-foreground">Rank</div>
-              <div className="text-xl font-bold">Silver Knight</div>
-            </div>
+
+        <GradientCard className="p-4 flex items-center gap-3" glowEffect>
+          <div className="w-14 h-14 rounded-full gradient-primary flex items-center justify-center shadow-glow">
+            <Sword className="w-7 h-7 text-primary-foreground" />
+          </div>
+          <div>
+            <div className="text-sm text-muted-foreground">Rank</div>
+            <div className="text-lg font-bold">Silver Knight</div>
           </div>
         </GradientCard>
       </div>
@@ -172,45 +148,56 @@ const Dashboard = () => {
         </GradientCard>
       </div>
 
-      {/* Daily Quests */}
+      {/* Language-based mini-games */}
       <div className="space-y-4 animate-slide-up" style={{ animationDelay: '0.4s' }}>
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold flex items-center gap-2">
             <Sparkles className="w-6 h-6 text-gold" />
-            Today's Quests
+            Play by Language
           </h2>
-          <span className="text-sm text-muted-foreground">Resets in 8h 23m</span>
+          <span className="text-sm text-muted-foreground">Choose a language and a challenge</span>
+        </div>
+
+        {/* Language selector */}
+        <div className="flex gap-3 mb-2">
+          {languages.map((lang) => (
+            <button
+              key={lang.key}
+              onClick={() => navigate(`/quest?lang=${lang.key}`)}
+              className="px-3 py-1 rounded-full bg-muted/50 text-sm hover:bg-muted transition-smooth"
+            >
+              {lang.label}
+            </button>
+          ))}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {dailyQuests.map((quest, index) => (
-            <GradientCard 
-              key={quest.id}
-              className="space-y-3"
-              style={{ animationDelay: `${0.5 + index * 0.1}s` }}
-            >
-              <div className="flex items-start justify-between">
-                <div className={`p-3 rounded-full bg-${quest.color}/10`}>
-                  <quest.icon className={`w-6 h-6 text-${quest.color}`} />
+          {languages.map((lang, idx) => (
+            <GradientCard key={lang.key} className="space-y-3" style={{ animationDelay: `${0.2 + idx * 0.08}s` }}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-bold text-lg">{lang.label}</h3>
+                  <div className="text-sm text-muted-foreground">Mini-games available: Typing & Fill-in-the-Blank</div>
                 </div>
-                <span className={`text-xs font-semibold px-2 py-1 rounded-full ${getDifficultyColor(quest.difficulty)}`}>
-                  {quest.difficulty}
-                </span>
-              </div>
-              
-              <div>
-                <h3 className="font-bold text-lg">{quest.title}</h3>
-                <p className="text-sm text-muted-foreground">{quest.description}</p>
+                <div className="text-xs text-muted-foreground">Language</div>
               </div>
 
-              <div className="flex items-center justify-between pt-2 border-t border-border">
-                <div className="flex items-center gap-1 text-gold">
-                  <Zap className="w-4 h-4" />
-                  <span className="font-semibold">{quest.xpReward} XP</span>
+              <div className="grid grid-cols-1 gap-3">
+                <div className="p-3 rounded-lg bg-muted/50 flex items-center justify-between">
+                  <div>
+                    <div className="font-semibold">Typing Challenge</div>
+                    <div className="text-sm text-muted-foreground">Type code snippets for {lang.label}.</div>
+                  </div>
+                  <Button size="sm" onClick={() => navigate(`/quest?mode=typing&lang=${lang.key}`)}>Start</Button>
                 </div>
-                <Button size="sm" variant="outline">
-                  Start
-                </Button>
+
+                <div className="p-3 rounded-lg bg-muted/50 flex items-center justify-between">
+                  <div>
+                    <div className="font-semibold">Fill-in-the-Blank</div>
+                    <div className="text-sm text-muted-foreground">Complete small code fragments in {lang.label}.</div>
+                  </div>
+                  <Button size="sm" onClick={() => navigate(`/quest?mode=fill&lang=${lang.key}`)}>Start</Button>
+                </div>
               </div>
             </GradientCard>
           ))}

@@ -8,6 +8,7 @@ import Dashboard from "./pages/Dashboard";
 import Quest from "./pages/Quest";
 import Progress from "./pages/Progress";
 import NotFound from "./pages/NotFound";
+import ThemeToggle from "./components/ui/theme-toggle";
 
 const queryClient = new QueryClient();
 
@@ -16,6 +17,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+      <ThemeToggle />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Login />} />
