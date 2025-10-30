@@ -27,4 +27,33 @@ public class DatabaseConnector {
     public static DataSource getDataSource() {
         return ds;
     }
+
+    // Initialize DB schema for development (idempotent)
+    public static void initializeSchema() {
+        String usersSql = "CREATE TABLE IF NOT EXISTS users (" +
+                "id SERIAL PRIMARY KEY, " +
+                "username TEXT, " +
+                "email TEXT UNIQUE NOT NULL, " +
+                "password_hash TEXT NOT NULL, " +
+                "created_at TIMESTAMP WITH TIME ZONE DEFAULT now()" +
+                ")";
+
+        String progressSql = "CREATE TABLE IF NOT EXISTS quest_progress (" +
+                "id SERIAL PRIMARY KEY, " +
+                "email TEXT NOT NULL, " +
+                "quest_id TEXT NOT NULL, " +
+                "progress NUMERIC, " +
+                "data JSONB, " +
+                "updated_at TIMESTAMP WITH TIME ZONE DEFAULT now(), " +
+                "UNIQUE (email, quest_id)" +
+                ")";
+
+        try (var c = ds.getConnection(); var stmt = c.createStatement()) {
+            stmt.execute(usersSql);
+            stmt.execute(progressSql);
+        } catch (Exception e) {
+            // print to stderr; App will also show stacktrace if needed
+            e.printStackTrace();
+        }
+    }
 }

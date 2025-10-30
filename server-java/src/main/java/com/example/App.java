@@ -1,6 +1,8 @@
 package com.example;
 
 import io.javalin.Javalin;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.HashMap;
@@ -27,9 +29,21 @@ public class App {
             ctx.status(500).json(Map.of("error", "internal error"));
         });
 
+    ObjectMapper mapper = new ObjectMapper();
+
+    // Create tables if missing (development convenience)
+    DatabaseConnector.initializeSchema();
+
         app.post("/api/register", ctx -> {
             try {
-                RegisterRequest req = ctx.bodyAsClass(RegisterRequest.class);
+                String raw = ctx.body();
+                RegisterRequest req;
+                try {
+                    req = mapper.readValue(raw, RegisterRequest.class);
+                } catch (JsonProcessingException jpe) {
+                    ctx.status(400).json(Map.of("error", "invalid JSON"));
+                    return;
+                }
                 if (req.email == null || req.password == null) {
                     ctx.status(400).json(Map.of("error", "email and password required"));
                     return;
@@ -52,7 +66,14 @@ public class App {
 
         app.post("/api/login", ctx -> {
             try {
-                LoginRequest req = ctx.bodyAsClass(LoginRequest.class);
+                String raw = ctx.body();
+                LoginRequest req;
+                try {
+                    req = mapper.readValue(raw, LoginRequest.class);
+                } catch (JsonProcessingException jpe) {
+                    ctx.status(400).json(Map.of("error", "invalid JSON"));
+                    return;
+                }
                 if (req.email == null || req.password == null) {
                     ctx.status(400).json(Map.of("error", "email and password required"));
                     return;
